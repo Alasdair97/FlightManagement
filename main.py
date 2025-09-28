@@ -5,8 +5,6 @@ import sqlite3
 
 
 class DBOperations:
-  sql_create_table_firsttime = 'createTables.sql'
-
   sql_create_table = "create table TableName"
 
   sql_insert = ""
@@ -19,9 +17,8 @@ class DBOperations:
 
   def __init__(self):
     try:
-      self.conn = sqlite3.connect("FlightManagment.db")
-      self.cur = self.conn.cursor()
-      self.cur.execute(self.sql_create_table_firsttime)
+      self.get_connection()
+      self.read_sql_file('createTables.sql')
       self.conn.commit()
     except Exception as e:
       print(e)
@@ -128,6 +125,20 @@ class DBOperations:
       print(e)
     finally:
       self.conn.close()
+
+# Helper function to run SQL script files
+
+  def read_sql_file(self,fileName):
+    fileObject = open(fileName, 'r')
+    sqlFile = fileObject.read()
+    fileObject.close()
+    sqlCommands = sqlFile.split(';')
+
+    for command in sqlCommands:
+      try:
+        self.cur.execute(command)
+      except Exception as e:
+        print(e)
 
 
 class FlightInfo:
