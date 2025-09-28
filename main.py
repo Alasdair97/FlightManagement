@@ -40,6 +40,17 @@ class DBOperations:
     finally:
       self.conn.close()
 
+  def insert_base_data(self):
+    try:
+      self.get_connection()
+      self.read_sql_file('insertLocationBase.sql')
+      self.conn.commit()
+      print("Base Locations Inserted")
+    except Exception as e:
+      print(e)
+    finally:
+      self.conn.close()
+
   def insert_data(self):
     try:
       self.get_connection()
@@ -188,7 +199,7 @@ while True:
   print("\n Menu:")
   print("**********")
   print(" 1. Create table FlightInfo")
-  print(" 2. Insert data into FlightInfo")
+  print(" 2. Insert Base Location Data")
   print(" 3. Select all data from FlightInfo")
   print(" 4. Search a flight")
   print(" 5. Update data some records")
@@ -200,7 +211,7 @@ while True:
   if __choose_menu == 1:
     db_ops.create_table()
   elif __choose_menu == 2:
-    db_ops.insert_data()
+    db_ops.insert_base_data()
   elif __choose_menu == 3:
     db_ops.select_all()
   elif __choose_menu == 4:
