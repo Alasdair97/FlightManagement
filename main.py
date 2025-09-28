@@ -201,8 +201,8 @@ class FlightInfo:
 while True:
   print("\n Menu:")
   print("**********")
-  print(" 1. Create table FlightInfo")
-  print(" 2. Insert Base Location Data")
+  print(" 1. Initiate Database")
+  print(" 2. Insert Base Data")
   print(" 3. Select all data from FlightInfo")
   print(" 4. Search a flight")
   print(" 5. Update data some records")
