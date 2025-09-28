@@ -41,7 +41,7 @@ CREATE TABLE flights (
     origin_location_id INTEGER NOT NULL,
     destination_location_id INTEGER NOT NULL,
     flight_pilot_id INTEGER NOT NULL,
-    plane_id INTEGER NOT NULL,
+    flight_plane_id INTEGER NOT NULL,
     departure_time_utc DATETIME NOT NULL,
     arrival_time_utc DATETIME NOT NULL,
     passengers_booked INTEGER DEFUALT 0,
@@ -50,5 +50,5 @@ CREATE TABLE flights (
     FOREIGN KEY(origin_location_id) REFERENCES location(location_id),
     FOREIGN KEY(destination_location_id) REFERENCES location(location_id),
     FOREIGN KEY(flight_pilot_id) REFERENCES pilot(pilot_id),
-    FOREIGN KEY(destination_location_id) REFERENCES location(location_id)
+    FOREIGN KEY(flight_plane_id) REFERENCES plane(plane_id)
 );
