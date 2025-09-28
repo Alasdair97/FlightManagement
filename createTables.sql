@@ -1,4 +1,4 @@
-CREATE TABLE location (
+CREATE TABLE locations (
     location_id INTEGER PRIMARY KEY,
     icao_code TEXT NOT NULL UNIQUE,
     iata_code TEXT NOT NULL UNIQUE,
@@ -47,8 +47,8 @@ CREATE TABLE flights (
     passengers_booked INTEGER DEFUALT 0,
     flight_status TEXT NOT NULL,
     time_delay TEXT,
-    FOREIGN KEY(origin_location_id) REFERENCES location(location_id),
-    FOREIGN KEY(destination_location_id) REFERENCES location(location_id),
+    FOREIGN KEY(origin_location_id) REFERENCES locations(location_id),
+    FOREIGN KEY(destination_location_id) REFERENCES locations(location_id),
     FOREIGN KEY(flight_pilot_id) REFERENCES pilot(pilot_id),
     FOREIGN KEY(flight_plane_id) REFERENCES plane(plane_id)
 );
