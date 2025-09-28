@@ -40,7 +40,7 @@ class DBOperations:
       self.conn.close()
 
   def insert_base_data(self):
-    tables = ['locations']
+    tables = ['locations','aircraftTypeRating','aircraftModel']
     try:
       self.get_connection()
       for table in tables:
