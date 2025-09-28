@@ -111,5 +111,5 @@ VALUES
     After giving it an example for London Heathrow
     I then asked for a selection of airports from across Europe and North Africa
     plus some airports in the Azures and greenland to have some timezones ofset negativly
-    from UTC Corrections were then made for escaping ' and 
+    from UTC Corrections were then made for escaping ' and using correct dashes
 */
