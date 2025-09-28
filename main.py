@@ -6,7 +6,6 @@ import sqlite3
 
 class DBOperations:
   sql_create_table = "create table TableName"
-
   sql_insert = ""
   sql_select_all = "select * from TableName"
   sql_search = "select * from TableName where FlightID = ?"
@@ -41,11 +40,16 @@ class DBOperations:
       self.conn.close()
 
   def insert_base_data(self):
+    tables = ['locations']
     try:
       self.get_connection()
-      self.read_sql_file('insertLocationsBase.sql')
-      self.conn.commit()
-      print("Base Locations Inserted")
+      for table in tables:
+        try:
+          self.read_sql_file('insertInto_%s.sql' % table)
+          self.conn.commit()
+          print('Base %s Inserted' % table)
+        except Exception as e:
+          print(e)
     except Exception as e:
       print(e)
     finally:
@@ -54,7 +58,6 @@ class DBOperations:
   def insert_data(self):
     try:
       self.get_connection()
-
       flight = FlightInfo()
       flight.set_flight_id(int(input("Enter FlightID: ")))
 
