@@ -18,14 +18,14 @@ CREATE TABLE aircraftModel (
     aircraft_model_type_rating_id TEXT NOT NULL,
     aircraft_manufacturer TEXT NOT NULL,
     capacity TEXT NOT NULL,
-    FOREIGN KEY(aircraft_model_type_rating_id) REFERNCES aircraftTypeRating(aircraft_type_rating_id)
+    FOREIGN KEY(aircraft_model_type_rating_id) REFERENCES aircraftTypeRating(aircraft_type_rating_id)
 );
 
 CREATE TABLE plane (
     plane_id INTEGER PRIMARY KEY,
     tailnumber TEXT NOT NULL,
     plane_model_id TEXT NOT NULL,
-    FOREIGN KEY(plane_model_id) REFERNCES aircraftModel(aircraft_model_id)
+    FOREIGN KEY(plane_model_id) REFERENCES aircraftModel(aircraft_model_id)
 );
 
 CREATE TABLE pilot (
@@ -33,7 +33,7 @@ CREATE TABLE pilot (
     pilot_first_name TEXT NOT NULL,
     pilot_last_name TEXT NOT NULL,
     pilot_type_rating_id INTEGER NOT NULL,
-    FOREIGN KEY(pilot_type_rating_id) REFERNCES aircraftTypeRating(aircraft_type_rating_id)
+    FOREIGN KEY(pilot_type_rating_id) REFERENCES aircraftTypeRating(aircraft_type_rating_id)
 );
 
 CREATE TABLE flights (
@@ -47,8 +47,8 @@ CREATE TABLE flights (
     passengers_booked INTEGER DEFUALT 0,
     flight_status TEXT NOT NULL,
     time_delay TEXT,
-    FOREIGN KEY(origin_location_id) REFERNCES location(location_id),
-    FOREIGN KEY(destination_location_id) REFERNCES location(location_id),
-    FOREIGN KEY(flight_pilot_id) REFERNCES pilot(pilot_id),
-    FOREIGN KEY(destination_location_id) REFERNCES location(location_id)
+    FOREIGN KEY(origin_location_id) REFERENCES location(location_id),
+    FOREIGN KEY(destination_location_id) REFERENCES location(location_id),
+    FOREIGN KEY(flight_pilot_id) REFERENCES pilot(pilot_id),
+    FOREIGN KEY(destination_location_id) REFERENCES location(location_id)
 );
