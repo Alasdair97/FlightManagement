@@ -1,4 +1,4 @@
-CREATE TABLE locations (
+CREATE TABLE IF NOT EXISTS locations (
     location_id INTEGER PRIMARY KEY,
     icao_code TEXT NOT NULL UNIQUE, -- Unique keys as airports cannot have duplicate ICAO/IATA codes 
     iata_code TEXT NOT NULL UNIQUE,
@@ -8,12 +8,12 @@ CREATE TABLE locations (
     local_timezone_utc TEXT NOT NULL
 );
 
-CREATE TABLE aircraftTypeRating (
+CREATE TABLE IF NOT EXISTS aircraftTypeRating (
     aircraft_type_rating_id INTEGER PRIMARY KEY,
     licence_endorsement TEXT NOT NULL
 );
 
-CREATE TABLE aircraftModel (
+CREATE TABLE IF NOT EXISTS aircraftModel (
     aircraft_model_id INTEGER PRIMARY KEY,
     aircraft_model_type_rating_id TEXT NOT NULL,
     aircraft_manufacturer TEXT NOT NULL,
@@ -21,14 +21,14 @@ CREATE TABLE aircraftModel (
     FOREIGN KEY(aircraft_model_type_rating_id) REFERENCES aircraftTypeRating(aircraft_type_rating_id)-- Foreign key refrencing which type rating is needed to fly this model of aircraft
 );
 
-CREATE TABLE plane (
+CREATE TABLE IF NOT EXISTS plane (
     plane_id INTEGER PRIMARY KEY,
     tailnumber TEXT NOT NULL,
     plane_model_id TEXT NOT NULL,
     FOREIGN KEY(plane_model_id) REFERENCES aircraftModel(aircraft_model_id)-- Foreign key refrencing what model of plane an idividiaul plane is
 );
 
-CREATE TABLE pilot (
+CREATE TABLE IF NOT EXISTS pilot (
     pilot_id INTEGER PRIMARY KEY,
     pilot_first_name TEXT NOT NULL,
     pilot_last_name TEXT NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE pilot (
     FOREIGN KEY(pilot_type_rating_id) REFERENCES aircraftTypeRating(aircraft_type_rating_id)-- Foreign key refrencing type rating the pilot holds
 );
 
-CREATE TABLE flights (
+CREATE TABLE IF NOT EXISTS flights (
     flight_id INTEGER PRIMARY KEY,
     origin_location_id INTEGER NOT NULL,
     destination_location_id INTEGER NOT NULL,
