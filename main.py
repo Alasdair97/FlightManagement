@@ -43,7 +43,7 @@ class DBOperations:
   def insert_base_data(self):
     try:
       self.get_connection()
-      self.read_sql_file('insertLocationBase.sql')
+      self.read_sql_file('insertLocationsBase.sql')
       self.conn.commit()
       print("Base Locations Inserted")
     except Exception as e:
