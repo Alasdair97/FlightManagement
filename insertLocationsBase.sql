@@ -1,4 +1,4 @@
-INSERT INTO locations
+INSERT INTO 'locations' ('icao_code','iata_code','location_name','city','country','local_timezone_utc')
 VALUES
     -- United Kingdom & Ireland
     ('EGLL','LHR','London Heathrow','London','United Kingdom','+00:00'),
