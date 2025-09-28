@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS aircraftTypeRating (
 
 CREATE TABLE IF NOT EXISTS aircraftModel (
     aircraft_model_id INTEGER PRIMARY KEY,
+    aircraft_model_name TEXT NOT NULL,
     aircraft_model_type_rating_id TEXT NOT NULL,
     aircraft_manufacturer TEXT NOT NULL,
     capacity TEXT NOT NULL,
