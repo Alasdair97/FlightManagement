@@ -7,7 +7,6 @@ import sqlite3
 class DBOperations:
   sql_create_table = "create table TableName"
   sql_insert = ""
-  sql_select_all = "select * from TableName"
   sql_search = "select * from TableName where FlightID = ?"
   sql_alter_data = ""
   sql_update_data = ""
@@ -70,11 +69,12 @@ class DBOperations:
     finally:
       self.conn.close()
 
-  def select_all(self):
+  def view_all(self):
     try:
       self.get_connection()
-      self.cur.execute(self.sql_select_all)
-      result = self.cur.fetchall()
+      self.read_sql_file('/workspaces/FlightManagement/Views/viewAllFlights.sql')
+      self.conn.commit()
+      print(self.conn.execute("SELECT * FROM FLIGHTS_TRACKER").fetchall())
 
       # think how you could develop this method to show the records
 
@@ -203,7 +203,7 @@ while True:
   print("**********")
   print(" 1. Initiate Database")
   print(" 2. Insert Base Data")
-  print(" 3. Select all data from FlightInfo")
+  print(" 3. View all from Flights data")
   print(" 4. Search a flight")
   print(" 5. Update data some records")
   print(" 6. Delete data some records")
@@ -216,7 +216,7 @@ while True:
   elif __choose_menu == 2:
     db_ops.insert_base_data()
   elif __choose_menu == 3:
-    db_ops.select_all()
+    db_ops.view_all()
   elif __choose_menu == 4:
     db_ops.search_data()
   elif __choose_menu == 5:
