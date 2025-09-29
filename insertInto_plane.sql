@@ -1,4 +1,4 @@
-INSERT INTO planes (tail_number, plane_model_id)
+INSERT INTO plane (tailnumber, plane_model_id)
 VALUES
     ('G-ABCD', 7),
     ('G-EFGH', 5),
