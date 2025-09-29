@@ -1,4 +1,5 @@
 import sqlite3
+from tabulate import tabulate
 
 # Define DBOperation class to manage all data into the database.
 # Give a name of your choice to the database
@@ -74,9 +75,11 @@ class DBOperations:
       self.get_connection()
       self.read_sql_file('/workspaces/FlightManagement/Views/viewAllFlights.sql')
       self.conn.commit()
-      print(self.conn.execute("SELECT * FROM FLIGHTS_TRACKER").fetchall())
-
-      # think how you could develop this method to show the records
+      cursor = self.conn.cursor()
+      cursor.execute("SELECT * FROM FLIGHTS_TRACKER")
+      rows = cursor.fetchall()
+      col_names = [description[0] for description in cursor.description]
+      print(tabulate(rows, headers=col_names, tablefmt="psql"))
 
     except Exception as e:
       print(e)
