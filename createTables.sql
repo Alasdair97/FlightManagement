@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS flights (
     passengers_booked INTEGER DEFAULT 0,-- using a default so when a new flight can be schedualed without specifing there are zero passengers
     flight_status TEXT NOT NULL,
     time_delay TEXT,
+    flight_number TEXT NOT NULL,
     FOREIGN KEY(origin_location_id) REFERENCES locations(location_id), -- forgein keys refrencing both origin and destination locations
     FOREIGN KEY(destination_location_id) REFERENCES locations(location_id),
     FOREIGN KEY(flight_pilot_id) REFERENCES pilot(pilot_id), -- foreign key refrencing pilot for the flight
