@@ -45,7 +45,7 @@ class DBOperations:
       self.get_connection()
       for table in tables:
         try:
-          self.read_sql_file('insertInto_%s.sql' % table)
+          self.read_sql_file('/workspaces/FlightManagement/BaseDataLoad/insertInto_%s.sql' % table)
           self.conn.commit()
           print('Base %s Inserted' % table)
         except Exception as e:
