@@ -9,4 +9,3 @@ SELECT
     from flights f
     JOIN locations o on f.origin_location_id = o.location_id
     JOIN locations d on f.destination_location_id = d.location_id; 
-    
