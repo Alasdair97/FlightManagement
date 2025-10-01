@@ -16,9 +16,7 @@ class DBOperations:
 
   def __init__(self):
     try:
-      self.get_connection()
-      self.read_sql_file('createTables.sql')
-      self.conn.commit()
+      self.create_tables()
     except Exception as e:
       print(e)
     finally:
@@ -28,12 +26,29 @@ class DBOperations:
     self.conn = sqlite3.connect("FlightManagment.db")
     self.cur = self.conn.cursor()
 
-  def create_table(self):
+  def create_tables(self):
     try:
       self.get_connection()
-      self.cur.execute(self.sql_create_table)
+      self.read_sql_file('createTables.sql')
       self.conn.commit()
-      print("Table created successfully")
+    except Exception as e:
+      print(e)
+    finally:
+      self.conn.close()
+
+  def drop_all(self):
+    try:
+      self.get_connection()
+      self.read_sql_file('/workspaces/FlightManagement/Operations/drop_all.sql')
+    except Exception as e:
+      print(e)
+    finally:
+      self.conn.close()
+
+  def reset_db(self):
+    try:
+      self.drop_all()
+      self.create_tables()
     except Exception as e:
       print(e)
     finally:
@@ -204,7 +219,7 @@ class FlightInfo:
 while True:
   print("\n Menu:")
   print("**********")
-  print(" 1. Initiate Database")
+  print(" 1. Reset Database")
   print(" 2. Insert Base Data")
   print(" 3. View all from Flights data")
   print(" 4. Search a flight")
@@ -215,7 +230,7 @@ while True:
   __choose_menu = int(input("Enter your choice: "))
   db_ops = DBOperations()
   if __choose_menu == 1:
-    db_ops.create_table()
+    db_ops.reset_db()
   elif __choose_menu == 2:
     db_ops.insert_base_data()
   elif __choose_menu == 3:
