@@ -29,7 +29,7 @@ class DBOperations:
   def create_tables(self):
     try:
       self.get_connection()
-      self.read_sql_file('createTables.sql')
+      self.read_sql_file('/workspaces/FlightManagement/Operations/createTables.sql')
       self.conn.commit()
     except Exception as e:
       print(e)
