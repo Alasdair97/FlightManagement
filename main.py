@@ -188,8 +188,13 @@ class DBOperations:
         print(" 4. Exit\n")
         __create_menu = int(input("Enter your choice: "))
         if __create_menu == 1:
-          flight_info = FlightInfo()
+          newFlight = flight_info = FlightInfo()
           flight_info.build_info(self)
+          sqlInsert="INSERT INTO 'flights'\
+                    ('origin_location_id','destination_location_id','flight_pilot_id','flight_plane_id','departure_time_utc','arrival_time_utc','flight_number')\
+                    VALUES\
+                    ({},{},{},{},'{}','{}','{}');\
+                    ".format(newFlight.flightOrgin, newFlight.flightDestination, newFlight.flightPilot, newFlight.flightPlane, newFlight.departureTime, newFlight.arrivalTime, newFlight.flightNumber)
         elif __create_menu == 2:
           FirstName =str(input("Enter Pilot First Name: "))
           LastName =str(input("Enter Pilot Last Name: "))
@@ -274,16 +279,18 @@ class FlightInfo:
     typeRatingQueryBase = open("/workspaces/FlightManagement/ViewsAndQuerys/selectTypeRatingFromPlaneID.sql").read()[:-3]
     typeRatingQuery = typeRatingQueryBase + self.flightPlane + "';"
     typeRating = self.db.get_id_from_table(typeRatingQuery)
-    self.flightpilot = self.get_pilot(typeRating)
+    self.flightPilot = self.get_pilot(typeRating)
     self.departureTime = self.get_departure_time()
     flightDuration = self.get_duration()
     self.arrivalTime = self.departureTime + flightDuration
-    
+    self.flightNumber = "FM" + str(int(input("Input Flight Number: FM")))
 
     print("Origin: {0}\nDestination: {1}\n".format(self.flightOrgin,self.flightDestination))
-    print("Plane: {0}\nPilot: {1}\n".format(self.flightPlane,self.flightpilot))
+    print("Plane: {0}\nPilot: {1}\n".format(self.flightPlane,self.flightPilot))
     print("Departing: {0}\n".format(self.departureTime))
     print("Arriving: {0}\n".format(self.arrivalTime))
+    print("FlightNo: {0}\n".format(self.flightNumber))
+
 
 
 
