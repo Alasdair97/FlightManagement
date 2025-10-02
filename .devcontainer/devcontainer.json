@@ -6,8 +6,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-python.python",// Extension for Python usage
-				"qwtel.sqlite-viewer"// Extension for viewing DB if needed 
+				"ms-python.python",
+				"yy0931.vscode-sqlite3-editor"
 			]
 		}
 	}
