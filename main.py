@@ -102,22 +102,58 @@ class DBOperations:
 
   def search_data(self):
     try:
-      self.get_connection()
+      while True:
+        print("\n Search Options:")
+        print("**********")
+        print(" 1. Flight No")
+        print(" 2. Departure Airport")
+        print(" 3. Destination")
+        print(" 4. Plane")
+        print(" 5. Exit\n")
+        __search_menu = int(input("Enter your choice: "))
+        if __search_menu == 1:
+          self.search_flight('FlightNo')
+        elif __search_menu == 2:
+          self.search_flight('DeptartureAirport')
+        elif __choose_menu == 3:
+          self.search_flight('Destination')
+        elif __choose_menu == 4:
+          self.search_flight('Plane')
+        elif __choose_menu == 5:
+          exit(0)
+        else:
+          print("Invalid Choice")
+    except Exception as e:
+      print(e)
+
+  def search_flight(self,choice):
+    if choice == 'FlightNo':
       flightNo = str(input("Enter FlightNo: "))
       sql_search = "SELECT * FROM FLIGHTS_TRACKER WHERE `Flight Number` = '%s'" % flightNo
+    elif choice == 'DeptartureAirport':
+      Depature = str(input("Enter Depature Airport code, city or name: "))
+      sql_search = "SELECT * FROM FLIGHTS_TRACKER WHERE `Flight Number` = '%s'" % Depature
+    elif choice == 'Destination':
+      sql_search = "SELECT * FROM FLIGHTS_TRACKER WHERE `Flight Number` = '%s'" % flightNo
+    elif choice == 'Plane':
+      sql_search = "SELECT * FROM FLIGHTS_TRACKER WHERE `Flight Number` = '%s'" % flightNo
+    else:
+          print("Invalid Choice")
+    try:
+      self.get_connection()
       self.cur.execute(sql_search)
       rows = self.cur.fetchall()
       if rows:
         col_names = [description[0] for description in self.cur.description]
         print(tabulate(rows, headers=col_names, tablefmt="psql"))
       else:
-        print("No Flight with Flight No: %s" % flightNo)
+        print("No Flight(s) found")
 
     except Exception as e:
       print(e)
     finally:
       self.conn.close()
-
+  
   def update_data(self):
     try:
       self.get_connection()
