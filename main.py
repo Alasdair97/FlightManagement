@@ -8,7 +8,6 @@ from tabulate import tabulate
 class DBOperations:
   sql_create_table = "create table TableName"
   sql_insert = ""
-  sql_search = "select * from TableName where FlightID = ?"
   sql_alter_data = ""
   sql_update_data = ""
   sql_delete_data = ""
@@ -104,21 +103,15 @@ class DBOperations:
   def search_data(self):
     try:
       self.get_connection()
-      flightID = int(input("Enter FlightNo: "))
-      self.cur.execute(self.sql_search, tuple(str(flightID)))
-      result = self.cur.fetchone()
-      if type(result) == type(tuple()):
-        for index, detail in enumerate(result):
-          if index == 0:
-            print("Flight ID: " + str(detail))
-          elif index == 1:
-            print("Flight Origin: " + detail)
-          elif index == 2:
-            print("Flight Destination: " + detail)
-          else:
-            print("Status: " + str(detail))
+      flightNo = str(input("Enter FlightNo: "))
+      sql_search = "SELECT * FROM FLIGHTS_TRACKER WHERE `Flight Number` = '%s'" % flightNo
+      self.cur.execute(sql_search)
+      rows = self.cur.fetchall()
+      if rows:
+        col_names = [description[0] for description in self.cur.description]
+        print(tabulate(rows, headers=col_names, tablefmt="psql"))
       else:
-        print("No Record")
+        print("No Flight with Flight No: %s" % flightNo)
 
     except Exception as e:
       print(e)
@@ -229,7 +222,9 @@ while True:
 
   __choose_menu = int(input("Enter your choice: "))
   db_ops = DBOperations()
-  if __choose_menu == 1:
+  if not type(__choose_menu) == int:
+    print("Please Enter a number ")
+  elif __choose_menu == 1:
     db_ops.reset_db()
   elif __choose_menu == 2:
     db_ops.insert_base_data()
@@ -242,6 +237,7 @@ while True:
   elif __choose_menu == 6:
     db_ops.delete_data()
   elif __choose_menu == 7:
+    db_ops.reset_db() #TODO for Testing remove before submission
     exit(0)
   else:
     print("Invalid Choice")
