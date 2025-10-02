@@ -5,6 +5,7 @@ SELECT
     d.iata_code AS Destination,
     STRFTIME('%R',f.departure_time_utc) AS Schedualed,
     STRFTIME('%R',f.departure_time_utc,f.time_delay) AS Expected,
+    STRFTIME('%R',f.arrival_time_utc,f.time_delay) AS Arrival,
     f.flight_status AS Status,
     o.city AS 'Origin City',
     d.city AS 'Destination City',
