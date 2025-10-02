@@ -135,9 +135,11 @@ class DBOperations:
       Depature = str(input("Enter Depature Airport code, city or name: "))
       sql_search = base_query + " WHERE Departure = '{0}' OR `Origin City` = '{0}' OR `Origin Alt Code` = '{0}' OR `Origin Airport` = '{0}' ".format(Depature)
     elif choice == 'Destination':
-      sql_search = base_query + " WHERE `Flight Number` = '%s'" % flightNo
+      Destination = str(input("Enter Destination Airport code, city or name: "))
+      sql_search = base_query + " WHERE Destination = '{0}' OR `Destination City` = '{0}' OR `Destination Alt Code` = '{0}' OR `Destination Airport` = '{0}' ".format(Destination)
     elif choice == 'Plane':
-      sql_search = "SELECT Tailnumber, Aircraft," + base_query[6:] + " WHERE `Flight Number` = '%s'" % flightNo
+      plane = str(input("Enter Plane Tailnumber or Model"))
+      sql_search = "SELECT Tailnumber, Aircraft," + base_query[6:] + " WHERE Tailnumber = '{0}' OR Aircraft = '{0}'".format(plane)
     else:
           print("Invalid Choice")
     try:
