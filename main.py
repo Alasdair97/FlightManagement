@@ -130,6 +130,12 @@ class DBOperations:
       print(e)
 
   def search_flight(self,choice,detail):
+    try:
+      self.get_connection()
+      self.read_sql_file('/workspaces/FlightManagement/ViewsAndQuerys/viewAllFlights.sql')
+      self.conn.commit()
+    except Exception as e:
+      print(e)
     base_query = open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read()[:-1]
     if choice == 'FlightNo':
       flightNo = str(input("Enter FlightNo: "))

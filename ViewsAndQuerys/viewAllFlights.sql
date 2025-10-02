@@ -1,4 +1,4 @@
-CREATE VIEW FLIGHTS_TRACKER as
+CREATE VIEW IF NOT EXISTS FLIGHTS_TRACKER as
 SELECT 
     f.flight_number AS 'Flight Number',
     o.iata_code AS Departure,
