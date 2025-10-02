@@ -272,9 +272,15 @@ class FlightInfo:
     print("Enter Destination")
     self.flightDestination = self.get_flight_location('Destination')
     self.flightPlane = self.get_plane()
-    self.flightpilot = self.get_pilot()
+    typeRatingQueryBase = open("/workspaces/FlightManagement/ViewsAndQuerys/selectTypeRatingFromPlaneID.sql").read()[:-3]
+    typeRatingQuery = typeRatingQueryBase + self.flightPlane + "';"
+    typeRating = self.db.get_id_from_table(typeRatingQuery)
+    self.flightpilot = self.get_pilot(typeRating)
     
-    print("Origin: {0}\nDestination: {1}".format(self.flightOrgin,self.flightDestination))
+
+    print("Origin: {0}\nDestination: {1}\n".format(self.flightOrgin,self.flightDestination))
+    print("Plane: {0}\Pilot: {1}\n".format(self.flightPlane,self.flightpilot))
+
 
   def get_flight_location(self,terminal):
     while True:
@@ -293,25 +299,28 @@ class FlightInfo:
     print("\n Select Plane By:")
     print("**********")
     print(" 1. tailnumber")
-    print(" 2. From Model ID")
-    print(" 2. Random of Model")
-    print(" 3. Random\n")
-    __pilot_menu = int(input("Enter your choice: "))
-    if __pilot_menu == 1:
+    print(" 2. Plane ID")
+    print(" 3. Random of Model")
+    print(" 4. Random\n")
+    __plane_menu = int(input("Enter your choice: "))
+    if __plane_menu == 1:
       tailnumber = "G-" + str(input("Enter Plane Tailnumber Suffix: G-"))
       flightPlanequery = "SELECT plane_id FROM plane WHERE tailnumber = '{0}';".format(tailnumber)
       return self.db.get_id_from_table(flightPlanequery)
-    elif __pilot_menu == 2:
+    elif __plane_menu == 2:
       return str(input("Enter Pilot id: "))
-    elif __pilot_menu == 3:
-      return str(input("Enter Pilot id: "))
-    elif __pilot_menu == 4:
+    elif __plane_menu == 3:
+      model = str(input("Enter Plane Model: "))
+      planequery = "SELECT aircraft_model_id FROM aircraftModel WHERE aircraft_model_name = '{0}';".format(model)
+      model_id = self.db.get_id_from_table(planequery)
+      flightPlanequery = "SELECT plane_id FROM plane WHERE plane_model_id = '{0}' ORDER BY RANDOM() LIMIT 1;".format(model_id)
+      return self.db.get_id_from_table(flightPlanequery)
+    elif __plane_menu == 4:
       flightPlanequery = "SELECT plane_id FROM plane ORDER BY RANDOM() LIMIT 1;"
       return self.db.get_id_from_table(flightPlanequery)
     else:
       print("Invalid Choice")
     
-
   def get_pilot(self,TypeRating):
     print("\n Select Pilot By:")
     print("**********")
