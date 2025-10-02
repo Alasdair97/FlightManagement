@@ -53,8 +53,11 @@ class DBOperations:
     finally:
       self.conn.close()
 
-  def insert_base_data(self):
-    tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']
+  def insert_test_data(self,amount):
+    if amount == "all":
+      tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']
+    elif amount == "base":
+      tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot']  
     try:
       self.get_connection()
       for table in tables:
@@ -64,21 +67,6 @@ class DBOperations:
           print('Base %s Inserted' % table)
         except Exception as e:
           print(e)
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
-
-  def insert_data(self):
-    try:
-      self.get_connection()
-      flight = FlightInfo()
-      flight.set_flight_id(int(input("Enter FlightID: ")))
-
-      self.cur.execute(self.sql_insert, tuple(str(flight).split("\n")))
-
-      self.conn.commit()
-      print("Inserted data successfully")
     except Exception as e:
       print(e)
     finally:
@@ -187,6 +175,20 @@ class DBOperations:
     finally:
       self.conn.close()
 
+  def insert_data(self):
+    try:
+      self.get_connection()
+      flight = FlightInfo()
+      flight.set_flight_id(int(input("Enter FlightID: ")))
+
+      self.cur.execute(self.sql_insert, tuple(str(flight).split("\n")))
+
+      self.conn.commit()
+      print("Inserted data successfully")
+    except Exception as e:
+      print(e)
+    finally:
+      self.conn.close()
 
 # Define Delete_data method to delete data from the table. The user will need to input the flight id to delete the corrosponding record.
 
@@ -266,28 +268,31 @@ while True:
   print("\n Menu:")
   print("**********")
   print(" 1. Reset Database")
-  print(" 2. Insert Base Data")
+  print(" 2. Insert Test Data")
   print(" 3. View all from Flights data")
   print(" 4. Search a flight")
-  print(" 5. Update data some records")
-  print(" 6. Delete data some records")
-  print(" 7. Exit\n")
+  print(" 5. Insert Base Data")
+  print(" 6. Update data some records") #TODO 
+  print(" 7. Delete data some records") #TODO
+  print(" 8. Exit\n")
 
   __choose_menu = int(input("Enter your choice: "))
   db_ops = DBOperations()
   if __choose_menu == 1:
     db_ops.reset_db()
   elif __choose_menu == 2:
-    db_ops.insert_base_data()
+    db_ops.insert_test_data('full')
   elif __choose_menu == 3:
     db_ops.view_all()
   elif __choose_menu == 4:
     db_ops.search_data()
   elif __choose_menu == 5:
-    db_ops.update_data()
+    db_ops.insert_test_data('base')
   elif __choose_menu == 6:
-    db_ops.delete_data()
+    db_ops.update_data()
   elif __choose_menu == 7:
+    db_ops.delete_data()
+  elif __choose_menu == 8:
     db_ops.reset_db() #TODO for Testing remove before submission
     exit(0)
   else:
