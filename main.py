@@ -8,7 +8,6 @@ from tabulate import tabulate
 class DBOperations:
   sql_create_table = "create table TableName"
   sql_insert = ""
-  sql_search = "select * from TableName where FlightID = ?"
   sql_alter_data = ""
   sql_update_data = ""
   sql_delete_data = ""
@@ -29,7 +28,7 @@ class DBOperations:
   def create_tables(self):
     try:
       self.get_connection()
-      self.read_sql_file('createTables.sql')
+      self.read_sql_file('/workspaces/FlightManagement/Operations/createTables.sql')
       self.conn.commit()
     except Exception as e:
       print(e)
@@ -54,8 +53,11 @@ class DBOperations:
     finally:
       self.conn.close()
 
-  def insert_base_data(self):
-    tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']
+  def insert_test_data(self,amount):
+    if amount == "all":
+      tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']
+    elif amount == "base":
+      tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot']  
     try:
       self.get_connection()
       for table in tables:
@@ -65,6 +67,109 @@ class DBOperations:
           print('Base %s Inserted' % table)
         except Exception as e:
           print(e)
+    except Exception as e:
+      print(e)
+    finally:
+      self.conn.close()
+
+  def view_all(self):
+    try:
+      self.get_connection()
+      self.read_sql_file('/workspaces/FlightManagement/ViewsAndQuerys/viewAllFlights.sql')
+      self.conn.commit()
+      cursor = self.conn.cursor()
+      cursor.execute(open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read())
+      rows = cursor.fetchall()
+      col_names = [description[0] for description in cursor.description]
+      print(tabulate(rows, headers=col_names, tablefmt="psql"))
+
+    except Exception as e:
+      print(e)
+    finally:
+      self.conn.close()
+
+  def search_data(self):
+    try:
+      while True:
+        print("\n Search Options:")
+        print("**********")
+        print(" 1. Flight No")
+        print(" 2. Departure Airport")
+        print(" 3. Destination")
+        print(" 4. Plane")
+        print(" 5. All FLight Details")
+        print(" 6. Exit\n")
+        __search_menu = int(input("Enter your choice: "))
+        if __search_menu == 1:
+          self.search_flight('FlightNo','normal')
+        elif __search_menu == 2:
+          self.search_flight('DeptartureAirport','normal')
+        elif __choose_menu == 3:
+          self.search_flight('Destination','normal')
+        elif __choose_menu == 4:
+          self.search_flight('Plane','normal')
+        elif __choose_menu == 5:
+          self.search_flight('FlightNo','full')
+        elif __choose_menu == 6:
+          exit(0)
+        else:
+          print("Invalid Choice")
+    except Exception as e:
+      print(e)
+
+  def search_flight(self,choice,detail):
+    try:
+      self.get_connection()
+      self.read_sql_file('/workspaces/FlightManagement/ViewsAndQuerys/viewAllFlights.sql')
+      self.conn.commit()
+    except Exception as e:
+      print(e)
+    base_query = open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read()[:-1]
+    if choice == 'FlightNo':
+      flightNo = str(input("Enter FlightNo: "))
+      if detail == 'normal':
+        sql_search = base_query + " WHERE `Flight Number` = '%s'" % flightNo
+      elif detail == 'full':
+        sql_search = "SELECT *" + base_query[85:] + " WHERE `Flight Number` = '%s'" % flightNo
+      else:
+        sql_search = None
+    elif choice == 'DeptartureAirport':
+      Depature = str(input("Enter Depature Airport code, city or name: "))
+      sql_search = base_query + " WHERE Departure = '{0}' OR `Origin City` = '{0}' OR `Origin Alt Code` = '{0}' OR `Origin Airport` = '{0}' ".format(Depature)
+    elif choice == 'Destination':
+      Destination = str(input("Enter Destination Airport code, city or name: "))
+      sql_search = base_query + " WHERE Destination = '{0}' OR `Destination City` = '{0}' OR `Destination Alt Code` = '{0}' OR `Destination Airport` = '{0}' ".format(Destination)
+    elif choice == 'Plane':
+      plane = str(input("Enter Plane Tailnumber or Model"))
+      sql_search = "SELECT Tailnumber, Aircraft," + base_query[6:] + " WHERE Tailnumber = '{0}' OR Aircraft = '{0}'".format(plane)
+    else:
+          print("Invalid Choice")
+    try:
+      self.get_connection()
+      self.cur.execute(sql_search)
+      rows = self.cur.fetchall()
+      if rows:
+        col_names = [description[0] for description in self.cur.description]
+        print(tabulate(rows, headers=col_names, tablefmt="psql"))
+      else:
+        print("No Flight(s) found")
+
+    except Exception as e:
+      print(e)
+    finally:
+      self.conn.close()
+  
+  def update_data(self):
+    try:
+      self.get_connection()
+
+      # Update statement
+
+      if result.rowcount != 0:
+        print(str(result.rowcount) + "Row(s) affected.")
+      else:
+        print("Cannot find this record in the database")
+
     except Exception as e:
       print(e)
     finally:
@@ -84,63 +189,6 @@ class DBOperations:
       print(e)
     finally:
       self.conn.close()
-
-  def view_all(self):
-    try:
-      self.get_connection()
-      self.read_sql_file('/workspaces/FlightManagement/Views/viewAllFlights.sql')
-      self.conn.commit()
-      cursor = self.conn.cursor()
-      cursor.execute("SELECT * FROM FLIGHTS_TRACKER")
-      rows = cursor.fetchall()
-      col_names = [description[0] for description in cursor.description]
-      print(tabulate(rows, headers=col_names, tablefmt="psql"))
-
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
-
-  def search_data(self):
-    try:
-      self.get_connection()
-      flightID = int(input("Enter FlightNo: "))
-      self.cur.execute(self.sql_search, tuple(str(flightID)))
-      result = self.cur.fetchone()
-      if type(result) == type(tuple()):
-        for index, detail in enumerate(result):
-          if index == 0:
-            print("Flight ID: " + str(detail))
-          elif index == 1:
-            print("Flight Origin: " + detail)
-          elif index == 2:
-            print("Flight Destination: " + detail)
-          else:
-            print("Status: " + str(detail))
-      else:
-        print("No Record")
-
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
-
-  def update_data(self):
-    try:
-      self.get_connection()
-
-      # Update statement
-
-      if result.rowcount != 0:
-        print(str(result.rowcount) + "Row(s) affected.")
-      else:
-        print("Cannot find this record in the database")
-
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
-
 
 # Define Delete_data method to delete data from the table. The user will need to input the flight id to delete the corrosponding record.
 
@@ -220,28 +268,32 @@ while True:
   print("\n Menu:")
   print("**********")
   print(" 1. Reset Database")
-  print(" 2. Insert Base Data")
+  print(" 2. Insert Test Data")
   print(" 3. View all from Flights data")
   print(" 4. Search a flight")
-  print(" 5. Update data some records")
-  print(" 6. Delete data some records")
-  print(" 7. Exit\n")
+  print(" 5. Insert Base Data")
+  print(" 6. Update data some records") #TODO 
+  print(" 7. Delete data some records") #TODO
+  print(" 8. Exit\n")
 
   __choose_menu = int(input("Enter your choice: "))
   db_ops = DBOperations()
   if __choose_menu == 1:
     db_ops.reset_db()
   elif __choose_menu == 2:
-    db_ops.insert_base_data()
+    db_ops.insert_test_data('full')
   elif __choose_menu == 3:
     db_ops.view_all()
   elif __choose_menu == 4:
     db_ops.search_data()
   elif __choose_menu == 5:
-    db_ops.update_data()
+    db_ops.insert_test_data('base')
   elif __choose_menu == 6:
-    db_ops.delete_data()
+    db_ops.update_data()
   elif __choose_menu == 7:
+    db_ops.delete_data()
+  elif __choose_menu == 8:
+    db_ops.reset_db() #TODO for Testing remove before submission
     exit(0)
   else:
     print("Invalid Choice")
