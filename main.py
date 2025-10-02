@@ -222,9 +222,7 @@ while True:
 
   __choose_menu = int(input("Enter your choice: "))
   db_ops = DBOperations()
-  if not type(__choose_menu) == int:
-    print("Please Enter a number ")
-  elif __choose_menu == 1:
+  if __choose_menu == 1:
     db_ops.reset_db()
   elif __choose_menu == 2:
     db_ops.insert_base_data()
