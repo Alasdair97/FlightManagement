@@ -1,0 +1,1 @@
+SELECT `Flight Number`, Departure, Destination, Schedualed, Expected, Status FROM FLIGHTS_TRACKER;
