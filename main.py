@@ -90,7 +90,7 @@ class DBOperations:
       self.read_sql_file('/workspaces/FlightManagement/ViewsAndQuerys/viewAllFlights.sql')
       self.conn.commit()
       cursor = self.conn.cursor()
-      cursor.execute("SELECT * FROM FLIGHTS_TRACKER")
+      cursor.execute(open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read())
       rows = cursor.fetchall()
       col_names = [description[0] for description in cursor.description]
       print(tabulate(rows, headers=col_names, tablefmt="psql"))
@@ -127,16 +127,17 @@ class DBOperations:
       print(e)
 
   def search_flight(self,choice):
+    base_query = open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read()[:-1]
     if choice == 'FlightNo':
       flightNo = str(input("Enter FlightNo: "))
-      sql_search = "SELECT * FROM FLIGHTS_TRACKER WHERE `Flight Number` = '%s'" % flightNo
+      sql_search = base_query + " WHERE `Flight Number` = '%s'" % flightNo
     elif choice == 'DeptartureAirport':
       Depature = str(input("Enter Depature Airport code, city or name: "))
-      sql_search = "SELECT * FROM FLIGHTS_TRACKER WHERE `Flight Number` = '%s'" % Depature
+      sql_search = base_query + " WHERE Departure = '{0}' OR `Origin City` = '{0}' OR `Origin Alt Code` = '{0}' OR `Origin Airport` = '{0}' ".format(Depature)
     elif choice == 'Destination':
-      sql_search = "SELECT * FROM FLIGHTS_TRACKER WHERE `Flight Number` = '%s'" % flightNo
+      sql_search = base_query + " WHERE `Flight Number` = '%s'" % flightNo
     elif choice == 'Plane':
-      sql_search = "SELECT * FROM FLIGHTS_TRACKER WHERE `Flight Number` = '%s'" % flightNo
+      sql_search = "SELECT Tailnumber, Aircraft," + base_query[6:] + " WHERE `Flight Number` = '%s'" % flightNo
     else:
           print("Invalid Choice")
     try:
