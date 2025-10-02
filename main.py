@@ -1,5 +1,6 @@
 import sqlite3
 from tabulate import tabulate
+from datetime import datetime, timedelta
 
 # Define DBOperation class to manage all data into the database.
 # Give a name of your choice to the database
@@ -258,8 +259,6 @@ class DBOperations:
 
 class FlightInfo:
   def __init__(self):
-    self.flight_plane = ''
-    self.departure_time_utc = ''
     self.arrival_time_utc = ''
     self.passengers_booked = 0
     self.flight_status = 'On Time'
@@ -276,10 +275,16 @@ class FlightInfo:
     typeRatingQuery = typeRatingQueryBase + self.flightPlane + "';"
     typeRating = self.db.get_id_from_table(typeRatingQuery)
     self.flightpilot = self.get_pilot(typeRating)
+    self.departureTime = self.get_departure_time()
+    flightDuration = self.get_duration()
+    self.arrivalTime = self.departureTime + flightDuration
     
 
     print("Origin: {0}\nDestination: {1}\n".format(self.flightOrgin,self.flightDestination))
-    print("Plane: {0}\Pilot: {1}\n".format(self.flightPlane,self.flightpilot))
+    print("Plane: {0}\nPilot: {1}\n".format(self.flightPlane,self.flightpilot))
+    print("Departing: {0}\n".format(self.departureTime))
+    print("Arriving: {0}\n".format(self.arrivalTime))
+
 
 
   def get_flight_location(self,terminal):
@@ -341,6 +346,24 @@ class FlightInfo:
     else:
       print("Invalid Choice")
     
+  def get_departure_time(self):
+    while True:
+        dateTime = input("Enter date and time of flight YYYY-MM-DD HH:MM: ")
+        try:
+            departure_time = datetime.strptime(dateTime, "%Y-%m-%d %H:%M")
+            return departure_time
+        except ValueError:
+            print("Invalid format use YYYY-MM-DD HH:MM (2025-10-01 14:30)")
+
+  def get_duration(self):
+    while True:
+        durationTime = input("Enter the time duration of flight HH:MM: ")
+        try:
+            duration_time = datetime.strptime(durationTime, "%H:%M")
+            durationDelta = timedelta(hours=duration_time.hour, minutes=duration_time.minute)
+            return durationDelta
+        except ValueError:
+            print("Invalid format use HH:MM (02:30)")
 
   def set_status(self, status):
     self.status = status
