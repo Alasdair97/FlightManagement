@@ -109,28 +109,36 @@ class DBOperations:
         print(" 2. Departure Airport")
         print(" 3. Destination")
         print(" 4. Plane")
-        print(" 5. Exit\n")
+        print(" 5. All FLight Details")
+        print(" 6. Exit\n")
         __search_menu = int(input("Enter your choice: "))
         if __search_menu == 1:
-          self.search_flight('FlightNo')
+          self.search_flight('FlightNo','normal')
         elif __search_menu == 2:
-          self.search_flight('DeptartureAirport')
+          self.search_flight('DeptartureAirport','normal')
         elif __choose_menu == 3:
-          self.search_flight('Destination')
+          self.search_flight('Destination','normal')
         elif __choose_menu == 4:
-          self.search_flight('Plane')
+          self.search_flight('Plane','normal')
         elif __choose_menu == 5:
+          self.search_flight('FlightNo','full')
+        elif __choose_menu == 6:
           exit(0)
         else:
           print("Invalid Choice")
     except Exception as e:
       print(e)
 
-  def search_flight(self,choice):
+  def search_flight(self,choice,detail):
     base_query = open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read()[:-1]
     if choice == 'FlightNo':
       flightNo = str(input("Enter FlightNo: "))
-      sql_search = base_query + " WHERE `Flight Number` = '%s'" % flightNo
+      if detail == 'normal':
+        sql_search = base_query + " WHERE `Flight Number` = '%s'" % flightNo
+      elif detail == 'full':
+        sql_search = "SELECT *" + base_query[85:] + " WHERE `Flight Number` = '%s'" % flightNo
+      else:
+        sql_search = None
     elif choice == 'DeptartureAirport':
       Depature = str(input("Enter Depature Airport code, city or name: "))
       sql_search = base_query + " WHERE Departure = '{0}' OR `Origin City` = '{0}' OR `Origin Alt Code` = '{0}' OR `Origin Airport` = '{0}' ".format(Depature)
