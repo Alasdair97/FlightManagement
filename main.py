@@ -87,7 +87,7 @@ class DBOperations:
   def view_all(self):
     try:
       self.get_connection()
-      self.read_sql_file('/workspaces/FlightManagement/Views/viewAllFlights.sql')
+      self.read_sql_file('/workspaces/FlightManagement/ViewsAndQuerys/viewAllFlights.sql')
       self.conn.commit()
       cursor = self.conn.cursor()
       cursor.execute("SELECT * FROM FLIGHTS_TRACKER")
