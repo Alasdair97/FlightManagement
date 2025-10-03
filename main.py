@@ -7,12 +7,6 @@ from datetime import datetime, timedelta
 
 
 class DBOperations:
-  sql_create_table = "create table TableName"
-  sql_insert = ""
-  sql_alter_data = ""
-  sql_update_data = ""
-  sql_delete_data = ""
-  sql_drop_table = ""
 
   def __init__(self):
     try:
@@ -153,7 +147,6 @@ class DBOperations:
         print(tabulate(rows, headers=col_names, tablefmt="psql"))
       else:
         print("No Flight(s) found")
-
     except Exception as e:
       print(e)
     finally:
@@ -247,8 +240,6 @@ class DBOperations:
     finally:
       self.conn.close()
 
-# Define Delete_data method to delete data from the table. The user will need to input the flight id to delete the corrosponding record.
-
   def delete_data(self):
     try:
       user_table = str(input("Select table to delete from: "))
@@ -296,7 +287,6 @@ class DBOperations:
     sqlFile = fileObject.read()
     fileObject.close()
     sqlCommands = sqlFile.split(';')
-
     for command in sqlCommands:
       try:
         self.cur.execute(command)
@@ -305,7 +295,6 @@ class DBOperations:
 
 class FlightInfo:
   def __init__(self):
-    self.arrival_time_utc = ''
     self.passengers_booked = 0
     self.flight_status = 'On Time'
     self.time_delay = "0000"
@@ -325,12 +314,6 @@ class FlightInfo:
     flightDuration = self.get_duration()
     self.arrivalTime = self.departureTime + flightDuration
     self.flightNumber = "FM" + str(int(input("Input Flight Number: FM")))
-
-    print("Origin: {0}\nDestination: {1}\n".format(self.flightOrgin,self.flightDestination))
-    print("Plane: {0}\nPilot: {1}\n".format(self.flightPlane,self.flightPilot))
-    print("Departing: {0}\n".format(self.departureTime))
-    print("Arriving: {0}\n".format(self.arrivalTime))
-    print("FlightNo: {0}\n".format(self.flightNumber))
 
   def get_flight_location(self,terminal):
     while True:
@@ -410,26 +393,14 @@ class FlightInfo:
         except ValueError:
             print("Invalid format use HH:MM (02:30)")
 
-  def set_status(self, status):
-    self.status = status
-
-  def get_flight_id(self):
-    return self.flightID
-
-  def get_flight_origin(self):
-    return self.flightOrigin
-
-  def get_flight_destination(self):
-    return self.flightDestination
-
-  def get_status(self):
-    return self.status
-
   def __str__(self):
     return str(
-      self.flightID
-    ) + "\n" + self.flightOrigin + "\n" + self.flightDestination + "\n" + str(
-      self.status)
+      "Origin: {0}\nDestination: {1}\n".format(self.flightOrgin,self.flightDestination) + \
+      "Plane: {0}\nPilot: {1}\n".format(self.flightPlane,self.flightPilot) + \
+      "Departing: {0}\n".format(self.departureTime) + \
+      "Arriving: {0}\n".format(self.arrivalTime) + \
+      "FlightNo: {0}\n".format(self.flightNumber)
+    )
 
 
 # The main function will parse arguments.
@@ -445,7 +416,7 @@ while True:
   print(" 4. Search a flight")
   print(" 5. Insert Base Data (Excluding Flights)")
   print(" 6. Create New Data record") 
-  print(" 7. Update data some records") #TODO 
+  print(" 7. Update data some records")
   print(" 8. Delete data some records")
   print(" 9. Exit\n")
 
@@ -468,7 +439,7 @@ while True:
   elif __choose_menu == 8:
     db_ops.delete_data()
   elif __choose_menu == 9:
-    db_ops.reset_db() #TODO for Testing remove before submission
+    # db_ops.reset_db() #TODO for Testing remove before submission, kept in incase of more time for changes
     exit(0)
   else:
     print("Invalid Choice")
