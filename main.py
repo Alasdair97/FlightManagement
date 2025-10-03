@@ -253,7 +253,10 @@ class DBOperations:
           print("Cannot find this record in the database")
       else:
         print("Could not find table")
-
+    except Exception as e:
+      print(e)
+    finally:
+      self.conn.close()
 
     except Exception as e:
       print(e)
