@@ -228,12 +228,32 @@ class DBOperations:
 
   def delete_data(self):
     try:
-      self.get_connection()
-
-      if result.rowcount != 0:
-        print(str(result.rowcount) + "Row(s) affected.")
+      user_table = str(input("Select table to delete from: "))
+      tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']  
+      if(user_table in tables):
+        user_id = int(input("Enter id to be deleted: "))
+        column_id = {
+          'locations':'location_id',
+          'aircraftTypeRating':'aircraft_type_rating',
+          'aircraftModel':'aircraft_model_id',
+          'plane':'plane_id',
+          'pilot':'pilot_id',
+          'flights':'flight_id'
+        }
+        idQuery = "SELECT {0} FROM {1} WHERE {0} = '{2}';".format(column_id[user_table],user_table, user_id)
+        idToBeDeleted = self.get_id_from_table(idQuery)
+        if idToBeDeleted:
+          deleteQuery = "DELETE FROM {1} WHERE {0} = {2};".format(column_id[user_table],user_table, user_id)
+          print(deleteQuery)
+          self.get_connection()
+          cursor = self.conn.cursor()
+          cursor.execute(deleteQuery)
+          self.conn.commit()
+        else:
+          print("Cannot find this record in the database")
       else:
-        print("Cannot find this record in the database")
+        print("Could not find table")
+
 
     except Exception as e:
       print(e)
@@ -290,9 +310,6 @@ class FlightInfo:
     print("Departing: {0}\n".format(self.departureTime))
     print("Arriving: {0}\n".format(self.arrivalTime))
     print("FlightNo: {0}\n".format(self.flightNumber))
-
-
-
 
   def get_flight_location(self,terminal):
     while True:
@@ -408,7 +425,7 @@ while True:
   print(" 5. Insert Base Data (Excluding Flights)")
   print(" 6. Create New Data record") 
   print(" 7. Update data some records") #TODO 
-  print(" 8. Delete data some records") #TODO
+  print(" 8. Delete data some records")
   print(" 9. Exit\n")
 
   __choose_menu = int(input("Enter your choice: "))
