@@ -83,7 +83,6 @@ class DBOperations:
       rows = cursor.fetchall()
       col_names = [description[0] for description in cursor.description]
       print(tabulate(rows, headers=col_names, tablefmt="psql"))
-
     except Exception as e:
       print(e)
     finally:
@@ -159,22 +158,6 @@ class DBOperations:
       print(e)
     finally:
       self.conn.close()
-  
-  def update_data(self):
-    try:
-      self.get_connection()
-
-      # Update statement
-
-      if result.rowcount != 0:
-        print(str(result.rowcount) + "Row(s) affected.")
-      else:
-        print("Cannot find this record in the database")
-
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
 
   def create_data(self):
     try:
@@ -219,6 +202,46 @@ class DBOperations:
           print("Invalid Choice")
         self.cur.execute(sqlInsert)
         self.conn.commit()
+    except Exception as e:
+      print(e)
+    finally:
+      self.conn.close()
+
+  def update_data(self):
+    try:
+      user_table = str(input("Select table to update a record from: "))
+      tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']  
+      if(user_table in tables):
+        user_id = int(input("Enter id to be updated: "))
+        column_id = {
+          'locations':'location_id',
+          'aircraftTypeRating':'aircraft_type_rating',
+          'aircraftModel':'aircraft_model_id',
+          'plane':'plane_id',
+          'pilot':'pilot_id',
+          'flights':'flight_id'
+        }
+        idQuery = "SELECT {0} FROM {1} WHERE {0} = '{2}';".format(column_id[user_table],user_table, user_id)
+        idToBeUpdated = self.get_id_from_table(idQuery)
+        if idToBeUpdated:
+          self.get_connection()
+          cursor = self.conn.cursor()
+          cursor.execute("select * from {0}".format(user_table))
+          columns = [description[0] for description in cursor.description]
+          print("\n Column Options:")
+          print("**********")
+          for column in columns:
+            print(column)
+          user_column = str(input("Enter column to be updated: "))
+          user_new_val = str(input("Enter a new value: "))
+          updateQuery = "UPDATE {1} SET {4}={3} WHERE {0} = {2};".format(column_id[user_table],user_table, user_id, user_new_val,user_column)
+          print(updateQuery)
+          cursor.execute(updateQuery)
+          self.conn.commit()
+        else:
+          print("Cannot find this record in the database")
+      else:
+        print("Could not find table")
     except Exception as e:
       print(e)
     finally:
