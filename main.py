@@ -258,11 +258,6 @@ class DBOperations:
     finally:
       self.conn.close()
 
-    except Exception as e:
-      print(e)
-    finally:
-      self.conn.close()
-
   def get_id_from_table(self,query):
     self.get_connection()
     cursor = self.conn.cursor()
