@@ -10,10 +10,12 @@
 			"version": "3.11"
 		}
 	},
+	// extensions should anyone wish to view code/databases directly
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-python.python"
+				"ms-python.python",
+				"yy0931.vscode-sqlite3-editor"
 			]
 		}
 	},
@@ -25,6 +27,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
+	// Instals requiments.txt python libraries (just tabulate for easier to read tables) 
 	"postCreateCommand": "pip3 install --user -r requirements.txt"
 
 	// Configure tool-specific properties.
