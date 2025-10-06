@@ -72,10 +72,9 @@ class DBOperations:
       self.get_connection()
       self.read_sql_file('/workspaces/FlightManagement/ViewsAndQuerys/viewAllFlights.sql')
       self.conn.commit()
-      cursor = self.conn.cursor()
-      cursor.execute(open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read())
-      rows = cursor.fetchall()
-      col_names = [description[0] for description in cursor.description]
+      self.cur.execute(open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read())
+      rows = self.cur.fetchall()
+      col_names = [description[0] for description in self.cur.description]
       print(tabulate(rows, headers=col_names, tablefmt="psql"))
     except Exception as e:
       print(e)
@@ -274,7 +273,7 @@ class DBOperations:
 
   def get_id_from_table(self,query):
     self.get_connection()
-    cursor = self.conn.cursor()
+    cursor = self.cur
     cursor.execute(query)
     rows = cursor.fetchone()
     idNumber = str(rows[0])
