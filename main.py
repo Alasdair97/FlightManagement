@@ -74,8 +74,11 @@ class DBOperations:
       self.conn.commit()
       self.cur.execute(open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read())
       rows = self.cur.fetchall()
-      col_names = [description[0] for description in self.cur.description]
-      print(tabulate(rows, headers=col_names, tablefmt="psql"))
+      if rows:
+        col_names = [description[0] for description in self.cur.description]
+        print(tabulate(rows, headers=col_names, tablefmt="psql"))
+      else:
+        print("No Flight(s) found")
     except Exception as e:
       print(e)
     finally:
