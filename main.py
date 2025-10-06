@@ -203,8 +203,10 @@ class DBOperations:
 
   def update_data(self): # Finds table_id of record and updates a column
     try:
-      user_table = str(input("Select table to update a record from: "))
       tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']  
+      printableTables = [[table] for table in tables]
+      print(tabulate(printableTables, headers=["Tables"], tablefmt="fancy_grid"))
+      user_table = str(input("Select table to update a record from: "))
       if(user_table in tables):
         user_id = int(input("Enter id to be updated: "))
         column_id = {
@@ -242,8 +244,10 @@ class DBOperations:
 
   def delete_data(self): # Finds a record from a table and removes the row
     try:
-      user_table = str(input("Select table to delete from: "))
       tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']  
+      printableTables = [[table] for table in tables]
+      print(tabulate(printableTables, headers=["Tables"], tablefmt="fancy_grid"))
+      user_table = str(input("Select table to delete from: "))
       if(user_table in tables):
         user_id = int(input("Enter id to be deleted: "))
         column_id = {
