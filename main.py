@@ -2,9 +2,8 @@ import sqlite3
 from tabulate import tabulate
 from datetime import datetime, timedelta
 
-# Define DBOperation class to manage all data into the database.
-# Give a name of your choice to the database
-
+# Tabulate used for 'pretty' outputs
+# Datetime used for inputing date and time into new flights in correct format
 
 class DBOperations:
 
@@ -17,13 +16,13 @@ class DBOperations:
       self.conn.close()
 
   def get_connection(self):
-    self.conn = sqlite3.connect("FlightManagment.db")
-    self.cur = self.conn.cursor()
+    self.conn = sqlite3.connect("FlightManagment.db") # Creates/Connects DB with name FlightManagment
+    self.cur = self.conn.cursor() # Creates cursor to interact with DB
 
   def create_tables(self):
     try:
       self.get_connection()
-      self.read_sql_file('/workspaces/FlightManagement/Operations/createTables.sql')
+      self.read_sql_file('/workspaces/FlightManagement/Operations/createTables.sql') # Creates empty table with all rules
       self.conn.commit()
     except Exception as e:
       print(e)
@@ -39,7 +38,7 @@ class DBOperations:
     finally:
       self.conn.close()
 
-  def reset_db(self):
+  def reset_db(self): # Drops all tables and recreates them with no data
     try:
       self.drop_all()
       self.create_tables()
@@ -48,11 +47,11 @@ class DBOperations:
     finally:
       self.conn.close()
 
-  def insert_test_data(self,amount):
+  def insert_test_data(self,amount): # Adds data to tables to interact with
     if amount == "all":
       tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']
     elif amount == "base":
-      tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot']  
+      tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot'] # Option to not insert any flights data
     try:
       self.get_connection()
       for table in tables:
@@ -67,7 +66,7 @@ class DBOperations:
     finally:
       self.conn.close()
 
-  def view_all(self):
+  def view_all(self): # Neat view of all flights in database
     try:
       self.get_connection()
       self.read_sql_file('/workspaces/FlightManagement/ViewsAndQuerys/viewAllFlights.sql')
@@ -93,7 +92,7 @@ class DBOperations:
         print(" 2. Departure Airport")
         print(" 3. Destination")
         print(" 4. Plane")
-        print(" 5. All FLight Details")
+        print(" 5. All FLight Details - From Flight No") 
         print(" 6. Exit\n")
         __search_menu = int(input("Enter your choice: "))
         if __search_menu == 1:
@@ -120,12 +119,12 @@ class DBOperations:
       self.conn.commit()
     except Exception as e:
       print(e)
-    base_query = open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read()[:-1]
+    base_query = open("/workspaces/FlightManagement/ViewsAndQuerys/viewNiceData.sql").read()[:-1] # Query that is edited to find selected flights
     if choice == 'FlightNo':
       flightNo = str(input("Enter FlightNo: "))
       if detail == 'normal':
         sql_search = base_query + " WHERE `Flight Number` = '%s'" % flightNo
-      elif detail == 'full':
+      elif detail == 'full': # Returns all fields from VIEW
         sql_search = "SELECT *" + base_query[85:] + " WHERE `Flight Number` = '%s'" % flightNo
       else:
         sql_search = None
@@ -166,8 +165,8 @@ class DBOperations:
         print(" 4. Exit\n")
         __create_menu = int(input("Enter your choice: "))
         if __create_menu == 1:
-          newFlight = flight_info = FlightInfo()
-          flight_info.build_info(self)
+          newFlight = FlightInfo() # Creates new FlightInfo instance to populate
+          newFlight.build_info(self)
           sqlInsert="INSERT INTO 'flights'\
                     ('origin_location_id','destination_location_id','flight_pilot_id','flight_plane_id','departure_time_utc','arrival_time_utc','flight_number')\
                     VALUES\
@@ -182,11 +181,11 @@ class DBOperations:
           while True:
             try:
               Tailnumber =str(input("Enter Tailnumber Sufix: "))
-              if len(Tailnumber) == 4:
+              if len(Tailnumber) >= 5:
                 Tailnumber = "G-" + Tailnumber.upper()
                 break
               else:
-                print("Tail nuumber suffix should be 4 characters long")
+                print("Tail nuumber suffix should be 5 characters or less")
             except Exception as e:
               print(e)
           plane_model =str(input("Enter Plane model: "))
@@ -202,7 +201,7 @@ class DBOperations:
     finally:
       self.conn.close()
 
-  def update_data(self):
+  def update_data(self): # Finds table_id of record and updates a column
     try:
       user_table = str(input("Select table to update a record from: "))
       tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']  
@@ -220,9 +219,8 @@ class DBOperations:
         idToBeUpdated = self.get_id_from_table(idQuery)
         if idToBeUpdated:
           self.get_connection()
-          cursor = self.conn.cursor()
-          cursor.execute("select * from {0}".format(user_table))
-          columns = [description[0] for description in cursor.description]
+          self.cur.execute("select * from {0}".format(user_table))
+          columns = [description[0] for description in self.cur.description]
           print("\n Column Options:")
           print("**********")
           for column in columns:
@@ -231,7 +229,7 @@ class DBOperations:
           user_new_val = str(input("Enter a new value: "))
           updateQuery = "UPDATE {1} SET {4}={3} WHERE {0} = {2};".format(column_id[user_table],user_table, user_id, user_new_val,user_column)
           print(updateQuery)
-          cursor.execute(updateQuery)
+          self.cur.execute(updateQuery)
           self.conn.commit()
         else:
           print("Cannot find this record in the database")
@@ -242,7 +240,7 @@ class DBOperations:
     finally:
       self.conn.close()
 
-  def delete_data(self):
+  def delete_data(self): # Finds a record from a table and removes the row
     try:
       user_table = str(input("Select table to delete from: "))
       tables = ['locations','aircraftTypeRating','aircraftModel','plane','pilot','flights']  
@@ -262,8 +260,7 @@ class DBOperations:
           deleteQuery = "DELETE FROM {1} WHERE {0} = {2};".format(column_id[user_table],user_table, user_id)
           print(deleteQuery)
           self.get_connection()
-          cursor = self.conn.cursor()
-          cursor.execute(deleteQuery)
+          self.cur.execute(deleteQuery)
           self.conn.commit()
         else:
           print("Cannot find this record in the database")
@@ -274,17 +271,14 @@ class DBOperations:
     finally:
       self.conn.close()
 
-  def get_id_from_table(self,query):
+  def get_id_from_table(self,query): # Function for getting the table_ids of records for use in update and delete functions
     self.get_connection()
-    cursor = self.cur
-    cursor.execute(query)
-    rows = cursor.fetchone()
+    self.cur.execute(query)
+    rows = self.cur.fetchone()
     idNumber = str(rows[0])
     return idNumber
 
-# Helper function to run SQL script files
-
-  def read_sql_file(self,fileName):
+  def read_sql_file(self,fileName): # Helper function to run SQL script files
     fileObject = open(fileName, 'r')
     sqlFile = fileObject.read()
     fileObject.close()
@@ -301,7 +295,7 @@ class FlightInfo:
     self.flight_status = 'On Time'
     self.time_delay = "0000"
 
-  def build_info(self, db):
+  def build_info(self, db): # Builds flight info from step by step user input
     self.db = db
     print("Enter Origin")
     self.flightOrgin = self.get_flight_location('Origin')
@@ -310,7 +304,7 @@ class FlightInfo:
     self.flightPlane = self.get_plane()
     typeRatingQueryBase = open("/workspaces/FlightManagement/ViewsAndQuerys/selectTypeRatingFromPlaneID.sql").read()[:-3]
     typeRatingQuery = typeRatingQueryBase + self.flightPlane + "';"
-    typeRating = self.db.get_id_from_table(typeRatingQuery)
+    typeRating = self.db.get_id_from_table(typeRatingQuery) # Passes through type rating of aircraft to be able to selct pilot 
     self.flightPilot = self.get_pilot(typeRating)
     self.departureTime = self.get_departure_time()
     flightDuration = self.get_duration()
@@ -404,11 +398,6 @@ class FlightInfo:
       "FlightNo: {0}\n".format(self.flightNumber)
     )
 
-
-# The main function will parse arguments.
-# These argument will be definded by the users on the console.
-# The user will select a choice from the menu to interact with the database.
-
 while True:
   print("\n Menu:")
   print("**********")
@@ -441,7 +430,6 @@ while True:
   elif __choose_menu == 8:
     db_ops.delete_data()
   elif __choose_menu == 9:
-    # db_ops.reset_db() #TODO for Testing remove before submission, kept in incase of more time for changes
     exit(0)
   else:
     print("Invalid Choice")
