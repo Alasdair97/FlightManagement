@@ -1,6 +1,8 @@
 # FlightManagement
 Coursework for CM500292
 
+To launch Tool if closed please enter `python main.py` or select `main.py` from EXPLORER and clcik the play button in the top right
+
 ## Tables
 
 | Table              | Description                           |
