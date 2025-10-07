@@ -39,6 +39,27 @@ Gives Options for searching for existing flights
 
 > Function displays options for arguments that are parsed individually
 
+```Example
+Enter your choice: 4
+
+ Search Options:
+*****************
+ 1. Flight No
+ 2. Departure Airport
+ 3. Destination
+ 4. Plane
+ 5. All FLight Details - From Flight No
+ 6. Exit
+
+Enter your choice: 1
+Enter FlightNo: FM568
++-----------------+-------------+---------------+--------------+------------+-----------+----------+
+| Flight Number   | Departure   | Destination   | Schedualed   | Expected   | Arrival   | Status   |
+|-----------------+-------------+---------------+--------------+------------+-----------+----------|
+| FM568           | LHR         | CDG           | 12:00        | 12:00      | 13:20     | On Time  |
++-----------------+-------------+---------------+--------------+------------+-----------+----------+
+```
+
 ### 5. Insert Base Data (Excluding Flights)
 
 Inserts data to all tables except flights incase wanting to work from blank flight table
