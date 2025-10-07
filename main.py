@@ -158,7 +158,7 @@ class DBOperations:
       while True:
         self.get_connection()
         print("\n Create Options:")
-        print("**********")
+        print("***************")
         print(" 1. Create Flight Record")
         print(" 2. Create Pilot Record")
         print(" 3. Create Plane Record")
@@ -330,7 +330,7 @@ class FlightInfo:
 
   def get_plane(self):
     print("\n Select Plane By:")
-    print("**********")
+    print("****************")
     print(" 1. tailnumber")
     print(" 2. Plane ID")
     print(" 3. Random of Model")
@@ -356,7 +356,7 @@ class FlightInfo:
     
   def get_pilot(self,TypeRating):
     print("\n Select Pilot By:")
-    print("**********")
+    print("*****************")
     print(" 1. Full Name")
     print(" 2. Pilot ID")
     print(" 3. Random Qualifed\n")
