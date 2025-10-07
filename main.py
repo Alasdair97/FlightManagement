@@ -158,7 +158,7 @@ class DBOperations:
       while True:
         self.get_connection()
         print("\n Create Options:")
-        print("***************")
+        print("*****************")
         print(" 1. Create Flight Record")
         print(" 2. Create Pilot Record")
         print(" 3. Create Plane Record")
@@ -225,8 +225,8 @@ class DBOperations:
           columns = [description[0] for description in self.cur.description]
           print("\n Column Options:")
           print("**********")
-          for column in columns:
-            print(column)
+          printableColumns = [[column] for column in columns]
+          print(tabulate(printableColumns, headers=["Tables"], tablefmt="fancy_grid"))
           user_column = str(input("Enter column to be updated: "))
           user_new_val = str(input("Enter a new value: "))
           updateQuery = "UPDATE {1} SET {4}={3} WHERE {0} = {2};".format(column_id[user_table],user_table, user_id, user_new_val,user_column)
